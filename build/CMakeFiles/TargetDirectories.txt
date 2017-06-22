@@ -1,0 +1,5 @@
+/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/CMakeFiles/edit_cache.dir
+/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/CMakeFiles/rebuild_cache.dir
+/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/source/CMakeFiles/edit_cache.dir
+/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/source/CMakeFiles/rebuild_cache.dir
+/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/source/CMakeFiles/algodat_4.dir

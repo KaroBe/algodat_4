@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++11   CMakeFiles/algodat_4_tests.dir/algodat_4_tests.cpp.o  -o algodat_4_tests -rdynamic 

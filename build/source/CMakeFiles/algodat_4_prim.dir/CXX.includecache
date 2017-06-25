@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/source/algodat_4_copy.cpp
+/home/kodo8354/Dokumente/algodat_4/source/algodat_4_prim.cpp
 string
 -
 iostream
@@ -14,5 +14,9 @@ iostream
 iterator
 -
 vector
+-
+algorithm
+-
+queue
 -
 

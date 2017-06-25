@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/source/algodat_4.cpp" "/home/karoline/Documents/studium/17_sose/algorithmen_und_datenstrukturen/algodat_4/build/source/CMakeFiles/algodat_4.dir/algodat_4.cpp.o"
+  "/home/kodo8354/Dokumente/algodat_4/source/algodat_4.cpp" "/home/kodo8354/Dokumente/algodat_4/build/source/CMakeFiles/algodat_4.dir/algodat_4.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

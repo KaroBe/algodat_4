@@ -87,8 +87,8 @@ void print_arcs(std::vector<Arc> arc_list)
 	for (Arc arcs : arc_list)
 	{	
 		std::cout
-			<< arcs.m_a -1  << " " 
-			<< arcs.m_b - 1 << " "
+			<< arcs.m_a  << " " 
+			<< arcs.m_b << " "
 			<< arcs.m_weight << "\n";	
 	}
 }
@@ -113,8 +113,8 @@ matrix make_adj_matrix(std::vector<Arc> graph_arcs)
 	{
 		//must substract 1 because index starts at 0, different from
 		//names in graph
-		adj_matrix[arc.m_a-1][arc.m_b-1] = arc.m_weight; //e.g matrix[1][2] = 4
-		adj_matrix[arc.m_b-1][arc.m_a-1] = arc.m_weight; //	matrix[2][1] = 4
+		adj_matrix[arc.m_a][arc.m_b] = arc.m_weight; //e.g matrix[1][2] = 4
+		adj_matrix[arc.m_b][arc.m_a] = arc.m_weight; //	matrix[2][1] = 4
 	}
 
 	std::cout << "list of arcs in graph: \n";
@@ -171,7 +171,13 @@ void kruskal_minspan_tree (matrix const& adj_matrix)
 
 	//vector with boolean value for each node in graph, according to
 	//index in adjacency matrix, initialized with false
-	std::vector<bool> visited (minspan_tree.size(),false);
+	std::vector<int> visited (minspan_tree.size(),0);
+
+	std::cout << "\nvisited nodes: \n0  1  2  3  4  5  6  7  8  9  10 11\n";
+	for(int i = 0; i<visited.size(); ++i)
+	{
+		std::cout << visited[i] << "  ";
+	}
 
 	//adding arcs to minspan_tree matrix
 	for(int i=0; i<arcs.size(); ++i)
@@ -181,10 +187,10 @@ void kruskal_minspan_tree (matrix const& adj_matrix)
 
 		//if node a and b that for a arc have been visited, skip the
 		//arc, because it would form a circle
-		if(	visited[node_a] == true and
-			visited[node_b] == true )
+		if(	visited[node_a] < 2 and
+			visited[node_b] < 2 true )
 		{
-			//do nothing (= skip the arc)
+			std::cout << "\nSkipped arc " << arcs[i].m_a << arcs[i].m_b << "\n";
 		}
 		//if at least one of the nodes was not visited already,
 		//set both nodes to visited and add the arc to the minimal
@@ -195,6 +201,12 @@ void kruskal_minspan_tree (matrix const& adj_matrix)
 			visited[node_b] = true;
 			minspan_tree[node_a][node_b] = arcs[i].m_weight;
 			minspan_tree[node_b][node_a] = arcs[i].m_weight;
+			std::cout << "\nAdded arc " << arcs[i].m_a << " " << arcs[i].m_b << "\n";
+		}
+		std::cout << "\nvisited nodes: \n0  1  2  3  4  5  6  7  8  9  10 11\n";
+		for(int i = 0; i<visited.size(); ++i)
+		{
+			std::cout << visited[i] << "  ";
 		}
 	}
 
@@ -206,15 +218,15 @@ int main ()
 {
 	// Vector containing all arcs of graph
 	std::vector<Arc> graph_arcs {
-		{1,2,4}, {1,6,10},
-		{2,3,2},
-		{3,5,7}, {3,7,5},
-		{4,5,1}, {4,7,8}, {4,8,5},
-		{5,7,2}, {5,12,5},
-		{6,7,2}, {6,8,10},
-		{8,9,3},
-		{9,10,7},
-		{10,11,1}
+		{0,1,4}, {0,5,10},
+		{1,2,2},
+		{2,4,7}, {2,6,5},
+		{3,4,1}, {3,6,8}, {3,7,5},
+		{4,6,2}, {4,11,5},
+		{5,6,2}, {5,7,10},
+		{7,8,3},
+		{8,9,7},
+		{9,10,1}
 	};
 
 	matrix adj_matrix = make_adj_matrix(graph_arcs);

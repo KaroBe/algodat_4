@@ -1,2 +1,2 @@
 # Build aufg_4
-add_executable(algodat_4 algodat_4.cpp)
+add_executable(algodat_4_prim algodat_4_prim.cpp)

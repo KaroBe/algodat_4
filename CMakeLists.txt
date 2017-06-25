@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(algodat_2)
+project(algodat_4)
 
 if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") OR ("${CMAKE_CXX_COMPILER_ID}"
 STREQUAL "GNU") OR (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel") AND UNIX))

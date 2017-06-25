@@ -189,10 +189,15 @@ void prim (matrix const& adj_matrix)
 	{
 		unvisited.insert(i);
 	}
+	std::copy(std::begin(unvisited), std::end(unvisited),
+		std::ostream_iterator<int>(std::cout, " "));
+
 
 	//vector of nodes that have been visited
 	//emtpy, as none has been visited yet
 	std::set<int> visited;
+	std::copy(std::begin(visited), std::end(visited),
+		std::ostream_iterator<int>(std::cout, " "));
 
 	//vector holding arcs that form minimal spanning tree
 	std::vector<Arc> tree;
@@ -213,6 +218,11 @@ void prim (matrix const& adj_matrix)
 			pr_queue.push(Arc{0,j,weight});
 		}
 	}
+	visited.insert(0);
+	std::cout << "\n visited: ";
+	std::copy(std::begin(visited), std::end(visited),
+		std::ostream_iterator<int>(std::cout, " "));
+	std::cout << "\n";
 
 	std::cout << "\npriority queue: \n";
 	print_queue(pr_queue);
@@ -233,19 +243,31 @@ void prim (matrix const& adj_matrix)
 	}
 	*/
 
-	while(!unvisited.empty())
+	//while there are unvisited nodes
+	while()
 	{
 		Arc top = pr_queue.top();
 		std::cout << "Top arc: " << top.m_a << " " << top.m_b
 				<< " " << top.m_weight << "\n";
 
-		while(	visited.find(top.m_a)!=visited.end() and
-			visited.find(top.m_b)!=visited.end())
+		//while the top arc of the priority queue has nodes that both have been
+	  	//visited, discard the arc
+		//visited.find() returns iterator to node in visited -> if it points to end
+		//the node has not been visited yet
+
+		bool test = visited.find(top.m_a) != visited.end(); //if this is true: node has been visited
+									//	false : not has NOT been visited
+		std::cout << test;
+		/*
+		while(	visited.find(top.m_a) != visited.end() and
+			visited.find(top.m_b) != visited.end())
 		{
 			std::cout << "skip " << top.m_a << " " << top.m_b
 				<< " " << top.m_weight << "\n";
 			pr_queue.pop();
 			top = pr_queue.top();
+			std::cout << "new top: " << top.m_a << " " << top.m_b
+				<< " " << top.m_weight << "\n";
 		}
 
 		if(!pr_queue.empty())
@@ -270,8 +292,9 @@ void prim (matrix const& adj_matrix)
 			pr_queue.pop();
 
 		} //endif
+		*/
 
-	} //end while
+	} //end while unvisited not empty
 
 	matrix minimal_spanning_tree = make_adj_matrix(tree);
 	print_matrix(minimal_spanning_tree);

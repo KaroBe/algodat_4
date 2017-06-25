@@ -15,12 +15,15 @@ Algorithmen und Datenstrukturen - Beleg 3
 #include <vector>
 #include <algorithm>
 #include <queue>
+#include <set>
 
 typedef std::vector<std::vector<int>> matrix;
 
 
-//arcs are defined as pairs of different nodes a and b, which are identified
-//by their index in the adjacency matrix and have a certain weight
+/*
+arcs are defined as pairs of different nodes a and b, which are identified
+by their index in the adjacency matrix and have a certain weight
+*/
 struct Arc
 {
 	Arc(int a,int b, int weight) :
@@ -34,9 +37,9 @@ struct Arc
 	int m_weight;
 	
 	//overloading < operator for priority queue
-	bool operator<(Arc const& arc) const
+	bool operator>(Arc const& arc) const
 	{
-		return m_weight < arc.m_weight;
+		return m_weight > arc.m_weight;
 	};
 };
 
@@ -47,6 +50,7 @@ adjusting spaces for 1 and 2 digit numbers
 void print_matrix(matrix mat)
 {
 	std::cout << "\ncolumn:\t";
+	// print 
 	for(int i=0; i<mat.size(); ++i)
 	{
 		std::cout << i;
@@ -87,7 +91,9 @@ void print_matrix(matrix mat)
 	}
 }
 
-//function printing an vector of arcs to the command line
+/*
+function printing an vector of arcs to the command line
+*/
 void print_arcs(std::vector<Arc> arc_list)
 {
 	std::cout << "Arcs: \n";
@@ -100,19 +106,50 @@ void print_arcs(std::vector<Arc> arc_list)
 	}
 }
 
-//make adjacency matrix from arcs
+/*
+function printing an priority queue of arcs to the command line
+*/
+void print_queue(std::priority_queue<Arc, std::vector<Arc>, std::greater<Arc>> arc_list)
+{
+	std::cout << "Arcs: \n";
+	while (!arc_list.empty())
+	{
+		Arc a = arc_list.top();
+		std::cout
+			<< "a: " << a.m_a  << " " 
+			<< " b : " << a.m_b << " "
+			<< " w : " << a.m_weight << "\n";
+		arc_list.pop();
+	}
+}
+
+/*
+function that constructs adjacency matrix from given arcs
+*/
 matrix make_adj_matrix(std::vector<Arc> graph_arcs)
 {
-	// Empty Adjacency Matrix of graph
+	//get number of different nodes in graph by creating set, which
+	//holds each node only once as key, and getting size of that set
+	std::set<int> nodes;
+	for (Arc arc : graph_arcs)
+	{
+		nodes.insert(arc.m_a);
+		nodes.insert(arc.m_b);
+	}
+	int num_nodes = nodes.size();
 
+	// Empty Adjacency Matrix of graph with num_nodes columns and rows
 	matrix adj_matrix;
 	std::cout << "adj_matrix deklaration\n";
-	for(int i = 0; i<12; ++i)
+	for(int i = 0; i<num_nodes; ++i)
 	{
-		adj_matrix.push_back(std::vector<int>(12,0)); //{0,0,...,0}
+		adj_matrix.push_back(std::vector<int>(num_nodes,0)); //{0,0,...,0}
 	}
+
+/*
 	std::cout << "\nEmpty Matrix: \n";
 	print_matrix(adj_matrix);	
+*/
 
 	// Write weights to adjacency matrix to achieve correct representation
 	// of graph and weigthed arcs
@@ -124,22 +161,122 @@ matrix make_adj_matrix(std::vector<Arc> graph_arcs)
 		adj_matrix[arc.m_b][arc.m_a] = arc.m_weight; //	matrix[2][1] = 4
 	}
 
+/*
 	std::cout << "list of arcs in graph: \n";
 	print_arcs(graph_arcs);
+*/
 
 	return adj_matrix;
 }
 
-//get adjacency matrix and return minimal spanning tree
+/*
+function that takes adjacency matrix and prints minimal spanning tree
+*/
 void prim (matrix const& adj_matrix)
 {
+	//num_nodes holds number of nodes in the graph
+	int num_nodes = adj_matrix.size();
+
 	//priority queue holding arcs that have been reached but
 	//not added to minimal spanning tree
-	std::priority_queue<Arc> pr_queue;
-	
-	pr_queue.push(Arc{1,2,3});
-	std::cout << pr_queue.top().m_weight;
-}
+	//top element in queue is arc with smallest weight
+	std::priority_queue<Arc, std::vector<Arc>, std::greater<Arc>> pr_queue;
+
+	//vector of nodes that have NOT been visited
+	//fill with indices of all nodes, as none has been visited yet
+	std::set<int> unvisited;
+	for(int i = 0; i<num_nodes; ++i)
+	{
+		unvisited.insert(i);
+	}
+
+	//vector of nodes that have been visited
+	//emtpy, as none has been visited yet
+	std::set<int> visited;
+
+	//vector holding arcs that form minimal spanning tree
+	std::vector<Arc> tree;
+
+	/* STEP A
+
+	- start with first node of index i in unvisited
+	- iterate column i of adj_matrix with variable j
+	- if j is unvisited and has connection to i, so that
+	  adj_matrix[i][j] != 0, add that arc to the priority queue
+	*/
+
+	for(int j = 1; j<num_nodes; ++j)
+	{
+		int weight = adj_matrix[0][j];
+		if(unvisited.find(j) != unvisited.end() and weight != 0)
+		{
+			pr_queue.push(Arc{0,j,weight});
+		}
+	}
+
+	std::cout << "\npriority queue: \n";
+	print_queue(pr_queue);
+
+	/* STEP B
+
+	- while there are unvisited nodes
+	{
+	- while the top arc of the priority queue has nodes that both have been
+	  visited, discard the arc
+	- if the priority queue is not empty
+		- add the arc on top of the priority queue (which has the
+		  minimal weight) to the minimal spanning tree
+		- move second arc node arc.m_b to the visited vector
+		- iterate column of the newly visited node i with variable j
+		- if j is unvisited and has connection to i, so that
+	  	  adj_matrix[i][j] != 0, add that arc to the priority queue
+	}
+	*/
+
+	while(!unvisited.empty())
+	{
+		Arc top = pr_queue.top();
+		std::cout << "Top arc: " << top.m_a << " " << top.m_b
+				<< " " << top.m_weight << "\n";
+
+		while(	visited.find(top.m_a)!=visited.end() and
+			visited.find(top.m_b)!=visited.end())
+		{
+			std::cout << "skip " << top.m_a << " " << top.m_b
+				<< " " << top.m_weight << "\n";
+			pr_queue.pop();
+			top = pr_queue.top();
+		}
+
+		if(!pr_queue.empty())
+		{
+			tree.push_back(top);
+			std::cout << "add to minspan tree " << top.m_a << " " << top.m_b
+				<< " " << top.m_weight << "\n";
+
+			unvisited.erase(top.m_b);
+			visited.insert(top.m_b);
+
+			//iterate column of newly visited 
+			for(int j = 0; j<num_nodes; ++j)
+			{
+				int weight = adj_matrix[top.m_b][j];
+				if(unvisited.find(j) != unvisited.end() and weight != 0)
+				{
+					pr_queue.push(Arc{0,j,weight});
+				}
+			}
+
+			pr_queue.pop();
+
+		} //endif
+
+	} //end while
+
+	matrix minimal_spanning_tree = make_adj_matrix(tree);
+	print_matrix(minimal_spanning_tree);
+
+} //end prim
 
 int main ()
 {

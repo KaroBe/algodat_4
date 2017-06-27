@@ -6,19 +6,3 @@
 
 #IncludeRegexTransform: 
 
-/home/kodo8354/Dokumente/algodat_4/source/algodat_4_prim.cpp
-string
--
-iostream
--
-iterator
--
-vector
--
-algorithm
--
-queue
--
-set
--
-

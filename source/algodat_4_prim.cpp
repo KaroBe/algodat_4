@@ -189,15 +189,19 @@ void prim (matrix const& adj_matrix)
 	{
 		unvisited.insert(i);
 	}
+	std::cout << "print unvisited nodes: \n";
 	std::copy(std::begin(unvisited), std::end(unvisited),
 		std::ostream_iterator<int>(std::cout, " "));
+	std::cout << "-\n";
 
 
 	//vector of nodes that have been visited
 	//emtpy, as none has been visited yet
 	std::set<int> visited;
+	std::cout << "print visited nodes: \n";
 	std::copy(std::begin(visited), std::end(visited),
 		std::ostream_iterator<int>(std::cout, " "));
+	std::cout << "-\n";
 
 	//vector holding arcs that form minimal spanning tree
 	std::vector<Arc> tree;
@@ -216,16 +220,22 @@ void prim (matrix const& adj_matrix)
 		if(unvisited.find(j) != unvisited.end() and weight != 0)
 		{
 			pr_queue.push(Arc{0,j,weight});
+			std::cout << "add to priority queue " << 0 << " " << j
+				<< " " << weight << "\n";
 		}
 	}
+
 	visited.insert(0);
-	std::cout << "\n visited: ";
+	unvisited.erase(0);
+
+	std::cout << "print visited nodes: \n";
 	std::copy(std::begin(visited), std::end(visited),
 		std::ostream_iterator<int>(std::cout, " "));
-	std::cout << "\n";
+	std::cout << "-\n";
 
 	std::cout << "\npriority queue: \n";
 	print_queue(pr_queue);
+	std::cout << "\n";
 
 	/* STEP B
 
@@ -244,7 +254,7 @@ void prim (matrix const& adj_matrix)
 	*/
 
 	//while there are unvisited nodes
-	while()
+	while(!unvisited.empty())
 	{
 		Arc top = pr_queue.top();
 		std::cout << "Top arc: " << top.m_a << " " << top.m_b
@@ -255,50 +265,74 @@ void prim (matrix const& adj_matrix)
 		//visited.find() returns iterator to node in visited -> if it points to end
 		//the node has not been visited yet
 
-		bool test = visited.find(top.m_a) != visited.end(); //if this is true: node has been visited
+		bool test = visited.find(top.m_b) != visited.end(); //if this is true: node has been visited
 									//	false : not has NOT been visited
-		std::cout << test;
-		/*
-		while(	visited.find(top.m_a) != visited.end() and
-			visited.find(top.m_b) != visited.end())
+		std::cout << "\nhas b been visited? " << test << "\n";
+		
+		if(visited.find(top.m_b) != visited.end())
 		{
 			std::cout << "skip " << top.m_a << " " << top.m_b
 				<< " " << top.m_weight << "\n";
+			std::cout << "pop from queue: " << pr_queue.top().m_a << " " << pr_queue.top().m_b
+				<< " " << pr_queue.top().m_weight << "\n";
 			pr_queue.pop();
 			top = pr_queue.top();
-			std::cout << "new top: " << top.m_a << " " << top.m_b
+			std::cout << "new top is: " << top.m_a << " " << top.m_b
 				<< " " << top.m_weight << "\n";
+
 		}
 
 		if(!pr_queue.empty())
 		{
-			tree.push_back(top);
-			std::cout << "add to minspan tree " << top.m_a << " " << top.m_b
-				<< " " << top.m_weight << "\n";
+			Arc added_arc = pr_queue.top();
 
-			unvisited.erase(top.m_b);
-			visited.insert(top.m_b);
+			tree.push_back(top);	//add arc to minspan tree
+			std::cout << "add to minspan tree : " << added_arc.m_a << " " << added_arc.m_b
+				<< " " << added_arc.m_weight << "\n";
+			std::cout << "pop from queue : " << added_arc.m_a << " " << added_arc.m_b
+				<< " " << added_arc.m_weight << "\n";	
+
+			pr_queue.pop();			//pop from priority queue
+
+			unvisited.erase(added_arc.m_b);
+			std::cout << "unvisited.erase: " << added_arc.m_b << "\n";
+			visited.insert(added_arc.m_b);
+			std::cout << "visited.insert top: " << added_arc.m_b << "\n";
+
+			Arc new_top = pr_queue.top();
 
 			//iterate column of newly visited 
 			for(int j = 0; j<num_nodes; ++j)
 			{
-				int weight = adj_matrix[top.m_b][j];
-				if(unvisited.find(j) != unvisited.end() and weight != 0)
+				int weight = adj_matrix[added_arc.m_b][j];
+				if(visited.find(j) == visited.end() and weight != 0)
 				{
-					pr_queue.push(Arc{0,j,weight});
+					pr_queue.push(Arc{added_arc.m_b,j,weight});
+					std::cout << "add to priority queue: " << added_arc.m_b << " " << j
+					<< " " << weight << "\n";
 				}
 			}
 
-			pr_queue.pop();
+			std::cout << "print visited nodes: \n";
+				std::copy(std::begin(visited), std::end(visited),
+				std::ostream_iterator<int>(std::cout, " "));
+				std::cout << "-\n";	
+			
+			std::cout << "print unvisited nodes: \n";
+				std::copy(std::begin(unvisited), std::end(unvisited),
+				std::ostream_iterator<int>(std::cout, " "));
+				std::cout << "-\n";	
+			
+			std::cout << "\n_this is the end of one while (unvisited != empty) loop __\n";
 
 		} //endif
-		*/
+		
 
 	} //end while unvisited not empty
 
 	matrix minimal_spanning_tree = make_adj_matrix(tree);
 	print_matrix(minimal_spanning_tree);
-
+	
 } //end prim
 
 int main ()
